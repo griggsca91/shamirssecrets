@@ -149,16 +149,21 @@ func Split(secret []byte, parts, threshold int) ([][]byte, error) {
 		out[idx][len(secret)] = uint8(xCoordinates[idx]) + 1
 	}
 
+	coefficients := make([]uint8, threshold)
+
+	// read all the rand numbers at once
+	randomNumbers := make([]byte, len(secret)*(threshold-1))
+	rand.Read(randomNumbers)
+
 	// Construct a random polynomial for each byte of the secret.
 	// Because we are using a field of size 256, we can only represent
 	// a single byte as the intercept of the polynomial, so we must
 	// use a new polynomial for each byte.
 	for idx, val := range secret {
-		coefficients := make([]uint8, threshold)
-		err := makePolynomial(val, coefficients)
-		if err != nil {
-			return nil, fmt.Errorf("failed to generate polynomial: %w", err)
-		}
+		// Ensure the intercept is set
+		i := idx * (threshold - 1)
+		coefficients[0] = val
+		copy(coefficients[1:], randomNumbers[i:i+(threshold-1)])
 
 		// Generate a `parts` number of (x,y) pairs
 		// We cheat by encoding the x value once as the final index,

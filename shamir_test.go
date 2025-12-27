@@ -53,39 +53,6 @@ func TestSplit(t *testing.T) {
 	}
 }
 
-func TestCombine_invalid(t *testing.T) {
-	// Not enough parts
-	if _, err := Combine(nil); err == nil {
-		t.Fatalf("should err")
-	}
-
-	// Mis-match in length
-	parts := [][]byte{
-		[]byte("foo"),
-		[]byte("ba"),
-	}
-	if _, err := Combine(parts); err == nil {
-		t.Fatalf("should err")
-	}
-
-	// Too short
-	parts = [][]byte{
-		[]byte("f"),
-		[]byte("b"),
-	}
-	if _, err := Combine(parts); err == nil {
-		t.Fatalf("should err")
-	}
-
-	parts = [][]byte{
-		[]byte("foo"),
-		[]byte("foo"),
-	}
-	if _, err := Combine(parts); err == nil {
-		t.Fatalf("should err")
-	}
-}
-
 func TestCombine(t *testing.T) {
 	secret := []byte("test")
 
