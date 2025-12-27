@@ -26,6 +26,12 @@ func TestCompareVaultWithMineMult(t *testing.T) {
 	}
 }
 
+func TestGaloisDiv(t *testing.T) {
+	assert.Equal(t, GaloisDiv(0, 7), uint8(0))
+	assert.Equal(t, GaloisDiv(3, 3), uint8(1))
+	assert.Equal(t, GaloisDiv(6, 3), uint8(2))
+}
+
 func BenchmarkMultGalois(b *testing.B) {
 	for b.Loop() {
 		GaloisMult(rand.N[uint8](255), rand.N[uint8](255))

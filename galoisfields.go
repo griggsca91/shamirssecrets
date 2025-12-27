@@ -1,5 +1,7 @@
 package shamirssecrets
 
+import "crypto/subtle"
+
 func GaloisAdd(a, b uint8) uint8 {
 	return a ^ b
 }
@@ -37,4 +39,26 @@ func VaultMult(a, b uint8) (out uint8) {
 	}
 
 	return r
+}
+
+func GaloisDiv(a, b uint8) uint8 {
+	ret := GaloisMult(a, GaloisInverse(b))
+	ret = uint8(subtle.ConstantTimeSelect(subtle.ConstantTimeByteEq(a, 0), 0, int(ret)))
+
+	return ret
+}
+
+func GaloisInverse(a uint8) uint8 {
+	b := GaloisMult(a, a)
+	c := GaloisMult(a, b)
+	b = GaloisMult(c, c)
+	b = GaloisMult(b, b)
+	c = GaloisMult(b, c)
+	b = GaloisMult(b, b)
+	b = GaloisMult(b, b)
+	b = GaloisMult(b, c)
+	b = GaloisMult(b, b)
+	b = GaloisMult(a, b)
+
+	return GaloisMult(b, b)
 }
